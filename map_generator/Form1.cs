@@ -34,6 +34,20 @@ namespace map_generator
             Bitmap animates = loadBitmap("images/animates.png");
             Bitmap ground = clipImage(terrains,0,0);
 
+            // read text
+            string[] maps = File.ReadAllLines("images/meaning.txt");
+
+            Dictionary<string, Bitmap> dictionary = new Dictionary<string, Bitmap>();
+            foreach (string map in maps)
+            {
+                string x = map.Trim();
+                if (x.StartsWith("#") || x.Length==0) continue;
+
+
+
+            }
+
+
             // 0-20 地形
             dict.Add(0, ground);
             dict.Add(1, clipImage(terrains, 0, 1, ground)); // 黄墙
