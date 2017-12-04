@@ -96,7 +96,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.textBox1);
             this.Name = "Form1";
-            this.Text = "地图生成器";
+            this.Text = "地图生成器 By 艾之葵";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
