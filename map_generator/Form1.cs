@@ -31,8 +31,12 @@ namespace map_generator
             // Bitmap ground = loadBitmap("images/ground.png");
             Bitmap ground = null;
 
+            string directory = ".\\";
+            if (!Directory.Exists(directory + "images"))
+                directory = "..\\";
+
             // read text
-            string[] maps = File.ReadAllLines("images/meaning.txt");
+            string[] maps = File.ReadAllLines(directory + "images\\meaning.txt");
 
             Dictionary<string, Bitmap> dictionary = new Dictionary<string, Bitmap>();
             foreach (string map in maps)
@@ -52,7 +56,7 @@ namespace map_generator
                     index = Convert.ToInt32(ss[2].Trim());
                     if (!dictionary.ContainsKey(filename))
                     {
-                        Bitmap bitmap = loadBitmap("images/" + filename+".png");
+                        Bitmap bitmap = loadBitmap(directory + "images\\" + filename+".png");
                         dictionary.Add(filename, bitmap);
                     }
                     Bitmap image = dictionary[filename];
@@ -68,7 +72,7 @@ namespace map_generator
             }
 
             // 100+ 怪物
-            Bitmap enemys = loadBitmap("images/enemys.png");
+            Bitmap enemys = loadBitmap(directory + "images\\enemys.png");
             var height = enemys.Height / 32;
 
             for (int i = 0; i < height; i++)
