@@ -34,6 +34,7 @@ namespace map_generator
             {
                 MessageBox.Show("images目录不存在！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
+                return;
             }
             bitmap = cloneBitmap(tmpMap);
             picture = cloneBitmap(tmpMap);
