@@ -62,14 +62,14 @@ namespace map_generator
                     var indexBlock = main.instance.maps.getBlock(0,0,i);
                     if('event' in indexBlock){
                         var id = indexBlock.event.id;
-                        var indexId = indexBlock.id;
-                        if(id=='autotile'){
-                            cls[i] = 'autotile';
+                        var clss = indexBlock.event.cls;
+                        if(clss=='autotile'){
+                            cls[i] = id;
                             indexes[i] = 0;
                             continue;
                         }
-                        cls[i] = indexBlock.event.cls;
-                        indexes[i] = icons[cls[i]][id];
+                        cls[i] = clss;
+                        indexes[i] = icons[clss][id];
                     }
                   }
             ";
