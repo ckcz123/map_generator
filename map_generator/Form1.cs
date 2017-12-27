@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Text.RegularExpressions;
+using Jint;
+using Jint.Native;
 
 namespace map_generator
 {
@@ -19,67 +21,79 @@ namespace map_generator
         Dictionary<int, Bitmap> dict;
         Dictionary<int, HSV[,]> colorDict;
 
-        public Form1()
+        public Form1(Bitmap ground)
         {
             InitializeComponent();
-            loadResources();
+            loadResources(ground);
+
+            List<string> list=new List<string>();
+            for (int i = 0; i < 13; i++)
+                list.Add("0 0 0 0 0 0 0 0 0 0 0 0 0");
+            textBox1.Text = string.Join("\r\n", list);
+            button2_Click(null,null);
         }
 
-        private void loadResources()
+        private void loadResources(Bitmap ground)
         {
             dict = new Dictionary<int, Bitmap>();
-            // Bitmap ground = loadBitmap("images/ground.png");
-            Bitmap ground = null;
 
             string directory = ".\\";
             if (!Directory.Exists(directory + "images"))
                 directory = "..\\";
 
-            // read text
-            string[] maps = File.ReadAllLines(directory + "images\\meaning.txt");
+            if (!Directory.Exists(directory + "images"))
+            {
+                MessageBox.Show("images目录不存在！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
+
+            // 读取JS
+            string js = @"main={'instance':{}};";
+            js += File.ReadAllText(directory + "libs\\icons.js");
+            js += File.ReadAllText(directory + "libs\\maps.js");
+            js += @"
+                main.instance.icons.init();
+                var icons=main.instance.icons.getIcons();
+
+                var cls = [], indexes = [];
+
+                var point = 0;
+                for(var i=1; i<400; i++){
+                    var indexBlock = main.instance.maps.getBlock(0,0,i);
+                    if('event' in indexBlock){
+                        var id = indexBlock.event.id;
+                        var indexId = indexBlock.id;
+                        if(id=='autotile'){
+                            cls[i] = 'autotile';
+                            indexes[i] = 0;
+                            continue;
+                        }
+                        cls[i] = indexBlock.event.cls;
+                        indexes[i] = icons[cls[i]][id];
+                    }
+                  }
+            ";
+
+            var engine = new Engine().Execute(js);
+            var cls = engine.GetValue("cls").AsArray();
+            var indexes = engine.GetValue("indexes").AsArray();
 
             Dictionary<string, Bitmap> dictionary = new Dictionary<string, Bitmap>();
-            foreach (string map in maps)
+            dict.Add(0, ground);
+            for (int i = 1; i < 400; i++)
             {
-                string x = map.Trim();
-                if (x.StartsWith("#") || x.Length==0) continue;
-                int index = x.IndexOf('#');
-                if (index >= 0)
-                    x = x.Substring(0, index);
-                x = x.Trim();
-                string[] ss = x.Split(new char[] {','});
-                if (ss.Length < 3) continue;
-                try
+                string filename = cls.Get(Convert.ToString(i)).ToString();
+                if (!"undefined".Equals(filename))
                 {
-                    int id = Convert.ToInt32(ss[0].Trim());
-                    string filename = ss[1].Trim();
-                    index = Convert.ToInt32(ss[2].Trim());
                     if (!dictionary.ContainsKey(filename))
                     {
-                        Bitmap bitmap = loadBitmap(directory + "images\\" + filename+".png");
+                        Bitmap bitmap = loadBitmap(directory + "images\\" + filename + ".png");
                         dictionary.Add(filename, bitmap);
                     }
                     Bitmap image = dictionary[filename];
-                    dict.Add(id, clipImage(image, 0, index, ground));
-                    if (id == 0) // 路面
-                    {
-                        ground = image;
-                    }
-                }
-                catch (Exception)
-                {
+                    dict.Add(i, clipImage(image, 0, Convert.ToInt32(indexes.Get(Convert.ToString(i)).ToString()), ground));
                 }
             }
-
-            // 100+ 怪物
-            Bitmap enemys = loadBitmap(directory + "images\\enemys.png");
-            var height = enemys.Height / 32;
-
-            for (int i = 0; i < height; i++)
-            {
-                dict.Add(201 + i, clipImage(enemys, 0, i, ground));
-            }
-
 
             colorDict = new Dictionary<int, HSV[,]>();
             foreach (int id in dict.Keys)
@@ -220,6 +234,11 @@ namespace map_generator
                 MessageBox.Show("请全选并手动复制。", "复制失败！");
             }
 
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
 
 

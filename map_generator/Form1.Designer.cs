@@ -97,6 +97,7 @@
             this.Controls.Add(this.textBox1);
             this.Name = "Form1";
             this.Text = "地图生成器 By 艾之葵";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
