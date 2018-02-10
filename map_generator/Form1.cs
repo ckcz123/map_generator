@@ -91,7 +91,14 @@ namespace map_generator
                         dictionary.Add(filename, bitmap);
                     }
                     Bitmap image = dictionary[filename];
-                    dict.Add(i, clipImage(image, 0, Convert.ToInt32(indexes.Get(Convert.ToString(i)).ToString()), ground));
+                    try
+                    {
+                        dict.Add(i,
+                            clipImage(image, 0, Convert.ToInt32(indexes.Get(Convert.ToString(i)).ToString()), ground));
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             }
 
