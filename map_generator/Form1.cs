@@ -38,31 +38,31 @@ namespace map_generator
             dict = new Dictionary<int, Bitmap>();
 
             string directory = ".\\";
-            if (!Directory.Exists(directory + "images"))
+            if (!Directory.Exists(directory + "project"))
                 directory = "..\\";
 
-            if (!Directory.Exists(directory + "images"))
+            if (!Directory.Exists(directory + "project"))
             {
-                MessageBox.Show("images目录不存在！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("project目录不存在！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
+                return;
             }
 
             // 读取JS
-            string js = @"main={'instance':{}};";
-            js += File.ReadAllText(directory + "libs\\icons.js");
-            js += File.ReadAllText(directory + "libs\\maps.js");
+            string js = "";
+            js += "var "+File.ReadAllText(directory + "project\\icons.js")+";";
+            js += "var "+File.ReadAllText(directory + "project\\maps.js")+";";
             js += @"
-                main.instance.icons.init();
-                var icons=main.instance.icons.getIcons();
+                var icons=icons_4665ee12_3a1f_44a4_bea3_0fccba634dc1;
+                var maps=maps_90f36752_8815_4be8_b32b_d7fad1d0542e;
 
                 var cls = [], indexes = [];
 
                 var point = 0;
-                for(var i=1; i<400; i++){
-                    var indexBlock = main.instance.maps.getBlock(0,0,i);
-                    if('event' in indexBlock){
-                        var id = indexBlock.event.id;
-                        var clss = indexBlock.event.cls;
+                for(var i=1; i<1000; i++){
+                    if (maps[i]) {
+                        var id = maps[i].id;
+                        var clss = maps[i].cls;
                         if(clss=='autotile'){
                             cls[i] = id;
                             indexes[i] = 0;
@@ -80,21 +80,23 @@ namespace map_generator
 
             Dictionary<string, Bitmap> dictionary = new Dictionary<string, Bitmap>();
             dict.Add(0, ground);
-            for (int i = 1; i < 400; i++)
+            for (int i = 1; i < 1000; i++)
             {
                 string filename = cls.Get(Convert.ToString(i)).ToString();
                 if (!"undefined".Equals(filename))
                 {
                     if (!dictionary.ContainsKey(filename))
                     {
-                        Bitmap bitmap = loadBitmap(directory + "images\\" + filename + ".png");
+                        Bitmap bitmap = loadBitmap(directory + "\\project\\images\\" + filename + ".png");
                         dictionary.Add(filename, bitmap);
                     }
                     Bitmap image = dictionary[filename];
                     try
                     {
+                        var height = 32;
+                        if (filename.Contains("48")) height = 48;
                         dict.Add(i,
-                            clipImage(image, 0, Convert.ToInt32(indexes.Get(Convert.ToString(i)).ToString()), ground));
+                            clipImage(image, 0, Convert.ToInt32(indexes.Get(Convert.ToString(i)).ToString()), ground, height));
                     }
                     catch (Exception)
                     {
@@ -139,9 +141,9 @@ namespace map_generator
                 return bit;
         }
 
-        private Bitmap clipImage(Bitmap source, int offsetX, int offsetY, Bitmap road = null)
+        private Bitmap clipImage(Bitmap source, int offsetX, int offsetY, Bitmap road = null, int height=32)
         {
-            offsetX *= 32; offsetY *= 32;
+            offsetX *= 32; offsetY *= height;
             Bitmap bitmap = new Bitmap(32, 32);
             Graphics graphic = Graphics.FromImage(bitmap);
             if (road != null)
@@ -161,7 +163,7 @@ namespace map_generator
             text = new Regex(" +").Replace(text, "\t");
             textBox1.Text = text;
 
-            string[] lines = textBox1.Text.Split('\n');
+            string[] lines = text.Split('\n');
             for (int i = 0; i < lines.Length; i++)
             {
                 string[] words = lines[i].Trim().Split('\t');

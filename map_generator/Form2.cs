@@ -22,13 +22,13 @@ namespace map_generator
 
             Bitmap tmpMap = null;
             // load image
-            if (Directory.Exists("images") && File.Exists("images\\terrains.png"))
+            if (Directory.Exists("project\\images") && File.Exists("project\\images\\terrains.png"))
             {
-                tmpMap = (Bitmap)Image.FromFile("images\\terrains.png");
+                tmpMap = (Bitmap)Image.FromFile("project\\images\\terrains.png");
             }
-            else if (Directory.Exists("..\\images") && File.Exists("..\\images\\terrains.png"))
+            else if (Directory.Exists("..\\project\\images") && File.Exists("..\\project\\images\\terrains.png"))
             {
-                tmpMap = (Bitmap)Image.FromFile("..\\images\\terrains.png");
+                tmpMap = (Bitmap)Image.FromFile("..\\project\\images\\terrains.png");
             }
             if (tmpMap == null)
             {
