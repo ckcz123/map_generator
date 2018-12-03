@@ -50,8 +50,8 @@ namespace map_generator
 
             // 读取JS
             string js = "";
-            js += "var "+File.ReadAllText(directory + "project\\icons.js")+";";
-            js += "var "+File.ReadAllText(directory + "project\\maps.js")+";";
+            js += File.ReadAllText(directory + "project\\icons.js")+";";
+            js += File.ReadAllText(directory + "project\\maps.js")+";";
             js += @"
                 var icons=icons_4665ee12_3a1f_44a4_bea3_0fccba634dc1;
                 var maps=maps_90f36752_8815_4be8_b32b_d7fad1d0542e;
