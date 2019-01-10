@@ -121,5 +121,10 @@ namespace map_generator
             return builder.ToString();
         }
 
+        public static void drawImage(Graphics g, Image bitmap, int x = 0, int y = 0)
+        {
+            g.DrawImage(bitmap, new Rectangle(x, y, bitmap.Width, bitmap.Height),
+                0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel);
+        }
     }
 }

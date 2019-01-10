@@ -202,7 +202,7 @@ namespace map_generator
             if (image == null) return;
             Bitmap bitmap = new Bitmap(image.Width, image.Height);
             Graphics graphic = Graphics.FromImage(bitmap);
-            graphic.DrawImage(image, 0, 0);
+            Core.drawImage(graphic, image);
             textBox1.Text = Core.calculate(bitmap, colorDict);
             button2_Click(null,null);
         }
