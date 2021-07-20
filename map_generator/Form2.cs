@@ -22,17 +22,17 @@ namespace map_generator
 
             Bitmap tmpMap = null;
             // load image
-            if (Directory.Exists("project\\images") && File.Exists("project\\images\\terrains.png"))
+            if (Directory.Exists("project\\materials") && File.Exists("project\\materials\\terrains.png"))
             {
-                tmpMap = (Bitmap)Image.FromFile("project\\images\\terrains.png");
+                tmpMap = (Bitmap)Image.FromFile("project\\materials\\terrains.png");
             }
-            else if (Directory.Exists("..\\project\\images") && File.Exists("..\\project\\images\\terrains.png"))
+            else if (Directory.Exists("..\\project\\materials") && File.Exists("..\\project\\materials\\terrains.png"))
             {
-                tmpMap = (Bitmap)Image.FromFile("..\\project\\images\\terrains.png");
+                tmpMap = (Bitmap)Image.FromFile("..\\project\\materials\\terrains.png");
             }
             if (tmpMap == null)
             {
-                MessageBox.Show("images目录不存在！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("materials目录不存在！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
                 return;
             }

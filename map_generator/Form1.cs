@@ -64,8 +64,6 @@ namespace map_generator
                         var id = maps[i].id;
                         var clss = maps[i].cls;
                         if(clss=='autotile'){
-                            cls[i] = id;
-                            indexes[i] = 0;
                             continue;
                         }
                         cls[i] = clss;
@@ -87,7 +85,7 @@ namespace map_generator
                 {
                     if (!dictionary.ContainsKey(filename))
                     {
-                        Bitmap bitmap = loadBitmap(directory + "\\project\\images\\" + filename + ".png");
+                        Bitmap bitmap = loadBitmap(directory + "\\project\\materials\\" + filename + ".png");
                         dictionary.Add(filename, bitmap);
                     }
                     Bitmap image = dictionary[filename];
@@ -215,25 +213,27 @@ namespace map_generator
                 string[] strings = text.Split(new char[] {'\n'});
 
                 StringBuilder builder=new StringBuilder();
+                var nextline = false;
                 foreach (string s in strings)
                 {
                     if (s.Trim().Length==0) continue;
-                    builder.Append('[');
                     string[] ss = s.Trim().Split(new char[] { '\t' });
+                    if (nextline) builder.Append(',').Append('\n');
+                    nextline = true;
 
-
-                    int l = 5;
+                    var start = true;
                     foreach (string s1 in ss)
                     {
-                        if (l<5)
+                        if (start) builder.Append('[');
+                        else builder.Append(',');
+                        start = false;
+                        if (s1.Length < 3)
                         {
-                            builder.Append(',');
-                            builder.Append(' ', 5 - l);
+                            builder.Append(' ', 3 - s1.Length);
                         }
                         builder.Append(s1);
-                        l = s1.Length;
                     }
-                    builder.Append(']').Append(',').Append('\n');
+                    builder.Append(']');
                 }
                 Clipboard.SetText(builder.ToString());
                 MessageBox.Show("地图的JS格式已复制到剪切板！", "复制成功！");
